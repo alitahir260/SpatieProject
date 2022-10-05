@@ -99,14 +99,15 @@ class AdminController extends Controller
     }
 
     public function storeadmin(Request $Request)
-    {
+    {   
+     
     
         $user=User::create([
             'name'=>$Request->name,
             'email' => $Request->email,
             'email_verified_at' => now(),
             'password' => hash::make($Request->password), // password
-           
+            'phone' => "080080800"
         ]);
          $user->assignRole('admin','writer');
         //  $role->givePermissionTo($permission);
