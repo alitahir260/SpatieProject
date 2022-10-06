@@ -9,6 +9,27 @@ use Illuminate\Support\Facades\Hash;
 
 class AdminController extends Controller
 {   
+    public function UserForm(Request $request)
+    {
+      return view('test');
+    }
+    public function AddUser(Request $request)
+    {
+      $user= User::Create([
+        'name'=>$request->name,
+        'email'=>$request->email,
+        'phone'=>$request->phone,
+        'password'=>hash::make($request->phone)
+      ]);
+      $user->assignRole('user');
+      return redirect('ShowData')->with('message','User Added');
+    }   
+    public function DeleteUser($id)
+    {
+       $users = User::find($id);    
+       $users->delete();
+       return response()->json(['sucess'=>'Record Has Been Delete']);
+    }
 
     public function updateStudent(Request $request)
     {
@@ -20,6 +41,7 @@ class AdminController extends Controller
             'email'=>$request->email,
             'phone'=>$request->phone,
         ]);
+    
         return true;
 
     }
@@ -118,9 +140,10 @@ class AdminController extends Controller
     public function showdata(User $users)
     {    
         // dd($users);
-        $data = User::all();
+        $data = User::all();      
         // $all_users_with_all_their_roles = User::with('roles')->get();
         $us =  User::role('user')->get();
+      
         $admin = User::role('admin')->get(); // Returns only users with the role 'admin'
         return view('data', compact('data','admin','us','users'));
     }

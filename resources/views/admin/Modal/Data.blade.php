@@ -1,4 +1,4 @@
-
+<div></div>
   <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -8,13 +8,20 @@
     <title>Document</title>
 </head>
 <body>
+    <div id="datatable1">
+
+    
     @extends('layouts.app')
     @section('content')
     
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-Zenh87qX5JnK2Jl0vWa8Ck2rdkQ2Bzep5IDxbcnCeuOxjzrPF/et3URy9Bv1WTRi" crossorigin="anonymous">
-
-    {{-- <link rel="stylesheet" href="https://cdn.datatables.net/1.12.1/css/dataTables.bootstrap4.min.css">
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-Zenh87qX5JnK2Jl0vWa8Ck2rdkQ2Bzep5IDxbcnCeuOxjzrPF/et3URy9Bv1WTRi" crossorigin="anonymous"> --}}
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/x-editable/1.5.0/jquery-editable/css/jquery-editable.css" rel="stylesheet" />
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.css" rel="stylesheet" />
+ 
+    
+    
+     {{-- <link rel="stylesheet" href="https://cdn.datatables.net/1.12.1/css/dataTables.bootstrap4.min.css"> --}}
+    {{-- <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-Zenh87qX5JnK2Jl0vWa8Ck2rdkQ2Bzep5IDxbcnCeuOxjzrPF/et3URy9Bv1WTRi" crossorigin="anonymous">  --}}
  <div class="container">
     <div class="row">
         <div class="col-md-12">
@@ -31,13 +38,18 @@
                   <h4>Database
                     <a href="{{url('test')}}" class="btn btn-primary float-end"> </a>
                   </h4>
+                  <a href="AddUser">
+                    <button class="btn btn-primary">
+                    Add User
+                  </button></a>
+                  
                 </div>
                 <div class="card-body"></div>
                 
-                <table class="table table-bordered table-striped" id="datatable">
+                <table class="table table-bordered table-striped datatable" id="UserTable">
                     <thead>
                         <tr>
-                            <th>ID</th>
+                    
                             <th>User Name </th>
                             <th>User Email</th>
                             <th>phone No:</th>
@@ -45,16 +57,25 @@
                         </tr>
                     </thead>
 
-                    <tbody>
+                    <tbody id="">
                         @foreach ($data as $item)
-                        <tr id="sid{{$item->id}}">
-                            <td>{{$item->id}}</td>
-                            <td>{{$item->name}}</td>
-                            <td>{{$item->email}}</td>
-                            <td>{{$item->phone}}</td>
-                            {{-- <td class="hidethis">{{$item->password}}</td> --}}
+                        <tr id="sid{{$item->id}}" class="item{{$item->id}}">
+                            <td hidden>{{ $item->id }}</td>
+                            <td>
+                                <a href="" class="update" data-name="name" data-type="text" data-pk="{{ $item->id }}" data-title="Enter name">{{ $item->name }}</a>
+                            </td>
+                            <td>
+                                <a href="" class="update" data-name="email" data-type="text" data-pk="{{ $item->id }}" data-title="Enter Email">{{ $item->email }}</a>
+                            </td>
+                            <td>
+                                <a href="" class="update" data-name="phone" data-type="text" data-pk="{{ $item->id }}" data-title="Enter Phone">{{ $item->phone }}</a>
+                            </td>
+                            {{-- <td>
+                                <a class="deleteProduct btn btn-xs btn-danger" data-id="{{ $item->id }}">Delete</a>
+                            </td> --}}
                             <td>
                                 <a href="javascript:void(0)" onclick="editUser({{$item->id}})" class="btn btn-success">Edit </a>
+                                <a href="javascript:void(0)" onclick="deleteUser({{$item->id}})" class="btn btn-danger"> Delete </a>
                             </td>
                                  {{-- <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#exampleModal">
                                     MODAL
@@ -79,7 +100,7 @@
                     <thead>
                         <tr>
                             <th>All Admins</th>
-                            <th>Admin Name </th>
+                    
                             
                         </tr>
                     </thead>
@@ -87,7 +108,7 @@
                     <tbody>
                         @foreach ($admin as $ad)
                         <tr>
-                            <td>{{$ad->id}}</td>
+                            <td hidden>{{$ad->id}}</td>
                             <td>{{$ad->name}}</td>
                           
                         </tr>
@@ -104,7 +125,7 @@
                     <thead>
                         <tr>
                             <th>All users</th>
-                            <th>users Name </th>
+                        
                             
                         </tr>
                     </thead>
@@ -112,9 +133,9 @@
                     <tbody>
                         @foreach ($us as $use)
                         <tr>
-                            <td>{{$use->id}}</td>
+                            <td hidden>{{$use->id}}</td>
                             <td>{{$use->name}}</td>
-                          
+
                         </tr>
                         @endforeach
                     </tbody>
@@ -180,7 +201,7 @@
                            </div>
             
                                    <div>
-                                    <button type="submit" class="btn btn-success" id="alert"> UPDATE </button>
+                                    <button type="submit" class="btn btn-success reload" id="alert"> UPDATE </button>
                                 </div>
 
                                 </div>
@@ -193,25 +214,10 @@
         <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-OERcA2EqjJCMA+/3y+gxIOqMEjwtxJY7qPCqsdltbNJuaOe923+mo//f6V8Qbsw3" crossorigin="anonymous"></script>
         <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.js"></script>
         <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validate/1.19.5/jquery.validate.min.js" integrity="sha512-rstIgDs0xPgmG6RX1Aba4KV5cWJbAMcvRCVmglpam9SoHZiUCyQVDdH2LPlxoHtrv17XWblE/V/PP+Tr04hbtA==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/x-editable/1.5.0/jquery-editable/js/jquery-editable-poshytip.min.js"></script>
+       <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
 
-
-{{-- ADD DATA --}}
-{{-- <script>
-    function editUser(id)
-    {
-        $.get('/Users/'+id,function(users){
-            $('#id').val(users.id);
-            $('#name2').val(users.id);
-            $('#email2').val(users.id);
-            $('#password2').val(users.id);
-            $('#editModal').modal('toggle');
-        })
-    }
-</script> --}}
-{{-- <script src="https://code.jquery.com/jquery-3.6.1.min.js" integrity="sha256-o88AwQnZB+VDvE9tvIXrMQaPlFFSUTR+nldQm1LuPXQ=" crossorigin="anonymous"></script>
-  <script src="https://cdn.jsdelivr.net/npm/jquery@3.5.1/dist/jquery.slim.min.js" integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj" crossorigin="anonymous"></script>
-  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-OERcA2EqjJCMA+/3y+gxIOqMEjwtxJY7qPCqsdltbNJuaOe923+mo//f6V8Qbsw3" crossorigin="anonymous"></script></body> --}}
-
+</div>
 </body>
 </html>
 
@@ -246,8 +252,10 @@ phone_no: {
     $("#success-alert").hide();
 
     $("#alert").click(function showAlert() {
+        
     $("#success-alert").fadeTo(3000, 500).slideUp(500, function(){
     $("#success-alert").slideUp(500);
+    
     });   
 });
     
@@ -272,6 +280,7 @@ phone_no: {
             let name= $("#name2").val();
             let email= $("#email2").val();
             let phone= $("#phone_no").val();
+    
 
             $.ajax({
             method: "put",
@@ -285,62 +294,86 @@ phone_no: {
             },
             success:function(response)
             {
-                setTimeout(function(){// wait for 5 secs(2)
-             location.reload(); // then reload the page.(3)
-             }, 4000); 
+                           
+                if(response)
+                {
+                    
+                    setTimeout(function() {
+                    $("#editModal").modal('toggle');
+                    $("#studentEditForm")[0].reset();
+                    location.reload();
+                 }, 3000);
+                 
+             }
             }
         });
         });
 
 
+        function deleteUser(id)
+        {
+            if(confirm("Are You Sure?"))
+            {
+                $.ajax({
+            method: "DELETE",
+            url: '/User/'+id,
+            data:{
+                _token: "{{ csrf_token() }}"    
+            },
+            success:function(response)
+            {
+                if(response)
+                {    
+                    $("#sid"+id).remove();
+                }
+            }
+        });
+        }
+    }
+//bracket
+
+
 </script>
+
+
+<script type="text/javascript">
+    $.fn.editable.defaults.mode = 'inline';
+
+    $.ajaxSetup({
+        headers: {
+            'X-CSRF-TOKEN': '{{ csrf_token() }}'
+        }
+    });
+
+    $('.update').editable({
+        url: "{{ route('inline.update') }}",
+        type: 'text',
+        datatype: "json",   
+        pk: 1,
+        name: 'name',
+        // title: 'Enter name'
+    });
+
+    // $(".deleteProduct").click(function(){
+    //     $(this).parents('tr').hide();
+    //     var id = $(this).data("id");
+    //     var token = '{{ csrf_token() }}';
+    //     $.ajax(
+    //     {
+    //         method:'POST',
+    //         url: "inline/delete/"+id,
+    //         data: {_token: token},
+    //         success: function(data)
+    //         {
+    //             toastr.success('Successfully!','Delete');
+    //         }
+    //     });
+    // });
+</script>
+
 
 @endsection
 
-            {{-- // $(document).ready(function(){
-            //     var table = $('#datatable').DataTable();
-    
-            //     //start edit record
-            //     table.on('click','.edit',function(e){
-            //         e.preventDefault();
-                    
-    
-            //         $tr =$(this).closest('tr');
-            //         if($($tr).hasClass('child')){
-            //             $tr = $tr.prev('.parent');
-            //         }
-    
-            //         var data = table.row($tr).data();
-            //         console.log(data);
-    
-            //         $('#name').val(data[1]);
-            //         $('#email').val(data[2]);
-            //         $('#password').val(data[3]);
-    
-            //         var id= $("#id").val(data[0]);
-    
-            //         // $('#editForm').attr('action','/AllData/'+data[0]);
-            //         var url= $('#editForm').attr('action','/UpdateAllData/'+data[0]);
-            //         $('#editModal').modal('show');
-                    
-            //         $.ajax({
-            //             url:url,
-            //             type:'put',
-            //             data:data,
-            //             dataType:'json',
-            //             beforeSend:function(){
-            //                 $(".save-data").addClass('disabled').text('Loading...');
-            //             },
-            //             success:function(res){
-            //                 $(".ajax-res").text('Data has been added');
-            //                 $(".save-data").removeClass('disabled').text('Submit');
-            //             }
-            //         });
-    
-            //     });
-            //     //end edit record
-            // });
-     --}}
            
 
 
@@ -351,3 +384,5 @@ phone_no: {
               // $("editModal").modal('toggle');
               // $("editForm")[0].reset(); --}}
          
+
+               {{-- $("#datatable tbody").prepend('<tr><td>'+ response.name +'</td><td>'+ response.email +'</td><td>'+ response.phone +'</td></tr>'); --}}
